@@ -1,11 +1,9 @@
 {
   "name": "telegraf-pagination",
   "version": "1.0.1",
-  "description": "Simplified pagination plugin for Telegraf",
+  "description": "A simplified Telegraf plugin to provide users with a great interface.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mcpeblocker/telegraf-pagination.git"
@@ -17,7 +15,7 @@
     "telegraf"
   ],
   "author": "Alisher Ortiqov <mcpeblocker@gmail.com> (mcpeblocker.uz)",
-  "license": "ISC",
+  "license": "MIT",
   "private": false,
   "bugs": {
     "url": "https://github.com/mcpeblocker/telegraf-pagination/issues",
