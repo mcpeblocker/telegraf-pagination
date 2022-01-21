@@ -3,7 +3,7 @@ class Pagination {
     onSelect = () => { };
     pageSize = 10;
     rowSize = 5;
-    totalPages = 0;
+    totalPages = null;
     currentPage = 1;
     currentItems = [];
     format = (item, index) => `${index + 1}. ${item}`;
