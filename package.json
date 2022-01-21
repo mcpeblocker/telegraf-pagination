@@ -1,0 +1,28 @@
+{
+  "name": "telegraf-pagination",
+  "version": "1.0.0",
+  "description": "Simplified pagination plugin for Telegraf",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcpeblocker/telegraf-pagination.git"
+  },
+  "keywords": [
+    "pagination",
+    "bot",
+    "telegram",
+    "telegraf"
+  ],
+  "author": "Alisher Ortiqov <mcpeblocker@gmail.com> (mcpeblocker.uz)",
+  "license": "ISC",
+  "private": false,
+  "bugs": {
+    "url": "https://github.com/mcpeblocker/telegraf-pagination/issues",
+    "email": "mcpeblocker@gmail.com"
+  },
+  "homepage": "https://github.com/mcpeblocker/telegraf-pagination#readme",
+  "dependencies": {}
+}
