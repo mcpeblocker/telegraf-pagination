@@ -2,7 +2,7 @@
 
 A simplified Telegraf plugin to provide users with a great interface.
 
-## Gettings started
+## Getting started
 
 ### Prerequisites
 
@@ -37,25 +37,47 @@ $ yarn add telegraf-pagination
 
 ### Quick start
 
+Default mode
 ```js
-const  Pagination  =  require('telegraf-pagination');
+const { Pagination } =  require('telegraf-pagination');
 
 let data = [...]; // define data as an array
 
-let pagination = new Pagination({ data });
-let text = pagination.text;
-let keyboard = pagination.keyboard;
+bot.start(async ctx => {
+    let pagination = new Pagination({ data });
+    let text = await pagination.text();
+    let keyboard = await pagination.keyboard();
+    ctx.reply(text, keyboard);
 
-pagination.handleActions(bot);
+    pagination.handleActions(bot);
+});
+```
 
-bot.telegram.sendMessage(ID, text, keyboard); // Replace ID with your account id or username
+Lazy mode
+```js
+const { Pagination } =  require('telegraf-pagination');
+
+let data = [...]; // define data as an array
+
+bot.start(async ctx => {
+    let pagination = new Pagination({
+        lazy: true, // switch lazy mode on
+        data: (page, size) => data.slice((page-1)*size, page*size), // callback that returns items of the page. Can be asynchrous
+        total: data.length // optional. can be useful when generating a header
+    });
+    let text = await pagination.text();
+    let keyboard = await pagination.keyboard();
+    ctx.reply(text, keyboard);
+
+    pagination.handleActions(bot);
+});
 ```
 
 ## Full Example
 
 ```js
 const { Telegraf } = require("telegraf");
-const Pagination = require("telegraf-pagination");
+const { Pagination } = require("telegraf-pagination");
 
 const TOKEN = "YOUR_BOT_TOKEN";
 const bot = new Telegraf(TOKEN);
@@ -69,7 +91,7 @@ let fakeData = Array(10)
 
 bot.command("pagination", (ctx) => {
   const pagination = new Pagination({
-    data: fakeData, // required
+    data: fakeData, // array of items
     header: (currentPage, pageSize, total) =>
       `${currentPage}-page of total ${total}`, // optional. Default value: 👇
     // `Items ${(currentPage - 1) * pageSize + 1 }-${currentPage * pageSize <= total ? currentPage * pageSize : total} of ${total}`;
@@ -92,8 +114,8 @@ bot.command("pagination", (ctx) => {
 
   pagination.handleActions(bot); // pass bot or scene instance as a parameter
 
-  let text = pagination.text; // get pagination text
-  let keyboard = pagination.keyboard; // get pagination keyboard
+  let text = await pagination.text(); // get pagination text
+  let keyboard = await pagination.keyboard(); // get pagination keyboard
   ctx.replyWithHTML(text, keyboard);
 });
 

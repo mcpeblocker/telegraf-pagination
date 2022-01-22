@@ -1,14 +1,5 @@
 class Pagination {
-    data = [];
-    onSelect = () => { };
-    pageSize = 10;
-    rowSize = 5;
-    totalPages = null;
-    currentPage = 1;
-    currentItems = [];
-    format = (item, index) => `${index + 1}. ${item}`;
-    header = (currentPage, pageSize, total) => `Items ${(currentPage - 1) * pageSize + 1 }-${currentPage * pageSize <= total ? currentPage * pageSize : total} of ${total}`;
-    messages = {
+    defaultMessages = {
         firstPage: "❗️ That's the first page",
         lastPage: "❗️ That's the last page",
         prev: "⬅️",
@@ -16,40 +7,70 @@ class Pagination {
         delete: "❌"
     };
 
-    constructor(options) {
-        if (options) {
-            this.data = options.data;
-            this.pageSize = options.pageSize || this.pageSize;
-            this.rowSize = options.rowSize || this.rowSize;
-            this.totalPages = Math.ceil(this.data.length / this.pageSize);
-            this.currentPage = (options.currentPage && options.currentPage < this.totalPages)
-                ?
-                options.currentPage
-                :
-                this.currentPage;
-            this.format = options.format || this.format;
-            this.header = options.header || this.header;
-            this.onSelect = options.onSelect || this.onSelect;
-            this.messages = Object.assign(this.messages, options.messages);
+    constructor({
+        data = [],
+        lazy = false,
+        total,
+        pageSize = 10,
+        rowSize = 5,
+        currentPage = 1,
+        onSelect = () => { },
+        format = (item, index) => `${index + 1}. ${item}`,
+        header = (currentPage, pageSize, total) => `Items ${(currentPage - 1) * pageSize + 1}-${currentPage * pageSize <= total ? currentPage * pageSize : total} of ${total}`,
+        messages = this.defaultMessages
+    }) {
+        this.lazy = lazy;
+        if (!this.lazy && Array.isArray(data)) {
+            this.data = data;
         }
+        else if (this.lazy && typeof data === "function") {
+            this.data = data;
+        } else {
+            throw new TypeError(`data must be function or array depending on value of lazy`);
+        }
+        this.pageSize = pageSize;
+        this.rowSize = rowSize;
+        this.currentPage = currentPage;
+        this.onSelect = onSelect;
+        this.format = format;
+        this.header = header;
+        this.messages = messages
+        this.total = this.lazy ? (total ?? Infinity) : this.data.length;
+        this.totalPages = Math.ceil(this.total / this.pageSize);
+        this.currentPage = (currentPage && (this.lazy || currentPage < this.totalPages))
+            ? currentPage : 1;
+        this.format = format;
+        this.header = header;
+        this.onSelect = onSelect;
+        this.messages = Object.assign(this.defaultMessages, messages);
 
         this._callbackStr = Math.random().toString(36).slice(2);
+
+        this.currentItems = [];
     }
 
-    get text() {
-        this.currentItems = getPageData(this.data, this.currentPage, this.pageSize);
+    async text() {
+        if (this.lazy) {
+            this.currentItems = await this.data(this.currentPage, this.pageSize);
+        } else {
+            this.currentItems = getPageData(this.data, this.currentPage, this.pageSize);
+        }
         const items = this.currentItems;
 
-        const header = this.header(this.currentPage, this.pageSize, this.data.length);
+        const header = this.header(this.currentPage, this.pageSize, this.total);
         const itemsText = items.map(this.format).join('\n');
 
         return `${header}\n${itemsText}`;
     }
 
-    get keyboard() {
+    async keyboard() {
         const keyboard = [];
 
-        this.currentItems = getPageData(this.data, this.currentPage, this.pageSize);
+        if (this.lazy) {
+            this.currentItems = await this.data(this.currentPage, this.pageSize);
+        } else {
+            this.currentItems = getPageData(this.data, this.currentPage, this.pageSize);
+        }
         const items = this.currentItems;
 
         let row = [];
@@ -94,21 +115,20 @@ class Pagination {
                         return await ctx.answerCbQuery(this.messages.firstPage);
                     }
                     this.currentPage = this.currentPage - 1;
-                    text = this.text;
-                    keyboard = this.keyboard;
+                    text = await this.text();
+                    keyboard = await this.keyboard();
                     await ctx.editMessageText(text, {
                         ...keyboard,
                         parse_mode: 'HTML'
                     });
                     break;
                 case 'next':
-                    let totalPages = Math.ceil(this.data.length / this.pageSize);
-                    if (this.currentPage >= totalPages) {
+                    if (this.currentPage >= this.totalPages) {
                         return await ctx.answerCbQuery(this.messages.lastPage);
                     }
                     this.currentPage = this.currentPage + 1;
-                    text = this.text;
-                    keyboard = this.keyboard;
+                    text = await this.text();
+                    keyboard = await this.keyboard();
                     await ctx.editMessageText(text, {
                         ...keyboard,
                         parse_mode: 'HTML'
@@ -129,4 +149,4 @@ const getPageData = (data, page, pageSize) => data.slice((page - 1) * pageSize, 
 
 const getButton = (text, callback_data) => ({ text, callback_data });
 
-module.exports = Pagination;
+module.exports = { Pagination };
