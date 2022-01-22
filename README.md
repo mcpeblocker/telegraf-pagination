@@ -62,7 +62,7 @@ let data = [...]; // define data as an array
 bot.start(async ctx => {
     let pagination = new Pagination({
         lazy: true, // switch lazy mode on
-        data: (page, size) => data.slice((page-1)*size, page*size), // callback that returns items of the page. Can be asynchrous
+        data: (page, size) => data.slice((page-1)*size, page*size), // callback that returns items of the page. Can be asynchronous
         total: data.length // optional. can be useful when generating a header
     });
     let text = await pagination.text();
