@@ -138,7 +138,7 @@ class Pagination {
                     await ctx.deleteMessage();
                     break;
                 default:
-                    this.onSelect(this.currentItems[data], parseInt(data) + 1);
+                    this.onSelect(this.currentItems[data], parseInt(data) + 1, ctx);
             };
             return await ctx.answerCbQuery();
         })
