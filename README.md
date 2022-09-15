@@ -76,7 +76,7 @@ bot.start(async ctx => {
 ## Full Example
 
 ```js
-const { Telegraf } = require("telegraf");
+const { Markup, Telegraf } = require("telegraf");
 const { Pagination } = require("telegraf-pagination");
 
 const TOKEN = "YOUR_BOT_TOKEN";
@@ -116,6 +116,9 @@ bot.command("pagination", (ctx) => {
       next: "▶️", // optional. Default value: "➡️"
       delete: "🗑", // optional. Default value: "❌"
     },
+    inlineCustomButtons: [
+      Markup.button.callback('Title custom button', 'your_callback_name')
+    ] // optional. Default value: null
   });
 
   pagination.handleActions(bot); // pass bot or scene instance as a parameter

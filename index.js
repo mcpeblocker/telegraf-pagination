@@ -20,6 +20,7 @@ class Pagination {
             titleKey: ''
         },
         isEnabledDeleteButton = true,
+        inlineCustomButtons = null,
         onSelect = () => { },
         format = (item, index) => `${index + 1}. ${item}`,
         header = (currentPage, pageSize, total) => `Items ${(currentPage - 1) * pageSize + 1}-${currentPage * pageSize <= total ? currentPage * pageSize : total} of ${total}`,
@@ -51,6 +52,7 @@ class Pagination {
         this.header = header;
         this.onSelect = onSelect;
         this.messages = Object.assign(this.defaultMessages, messages);
+        this.inlineCustomButtons = inlineCustomButtons;
         this.buttonModeOptions = {
             isSimpleArray: true,
             titleKey: ''
@@ -158,6 +160,11 @@ class Pagination {
         }
         row.push(getButton(this.messages.next, `${this._callbackStr}-next`));
         keyboard.push(row);
+
+        // If needed add custom buttons
+        if (this.inlineCustomButtons && typeof this.inlineCustomButtons === 'object') {
+            keyboard.push(this.inlineCustomButtons);
+        }
 
         // Give ready-to-use Telegra Markup object
         return {
