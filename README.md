@@ -76,7 +76,7 @@ bot.start(async ctx => {
 ## Full Example
 
 ```js
-const { Telegraf } = require("telegraf");
+const { Markup, Telegraf } = require("telegraf");
 const { Pagination } = require("telegraf-pagination");
 
 const TOKEN = "YOUR_BOT_TOKEN";
@@ -99,6 +99,12 @@ bot.command("pagination", (ctx) => {
     // `${index + 1}. ${item}`;
     pageSize: 8, // optional. Default value: 10
     rowSize: 4, // optional. Default value: 5 (maximum 8)
+    isButtonMode: false, // optional. Default value: false. Allows you to display names on buttons (there is support for associative arrays)
+    buttonModeOptions: {
+      isSimpleArray: true, // optional. Default value: true. Enables/disables support for associative arrays
+      titleKey: '' // optional. Default value: null. If the associative mode is enabled (isSimply: false), determines by which key the title for the button will be taken.
+    },
+    isEnabledDeleteButton: true, // optional. Default value: true
     onSelect: (item, index) => {
       ctx.reply(item.title);
     }, // optional. Default value: empty function
@@ -110,6 +116,9 @@ bot.command("pagination", (ctx) => {
       next: "▶️", // optional. Default value: "➡️"
       delete: "🗑", // optional. Default value: "❌"
     },
+    inlineCustomButtons: [
+      Markup.button.callback('Title custom button', 'your_callback_name')
+    ] // optional. Default value: null
   });
 
   pagination.handleActions(bot); // pass bot or scene instance as a parameter

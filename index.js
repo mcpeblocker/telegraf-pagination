@@ -14,6 +14,13 @@ class Pagination {
         pageSize = 10,
         rowSize = 5,
         currentPage = 1,
+        isButtonsMode = false,
+        buttonModeOptions = {
+            isSimpleArray: true,
+            titleKey: ''
+        },
+        isEnabledDeleteButton = true,
+        inlineCustomButtons = null,
         onSelect = () => { },
         format = (item, index) => `${index + 1}. ${item}`,
         header = (currentPage, pageSize, total) => `Items ${(currentPage - 1) * pageSize + 1}-${currentPage * pageSize <= total ? currentPage * pageSize : total} of ${total}`,
@@ -39,10 +46,29 @@ class Pagination {
         this.totalPages = Math.ceil(this.total / this.pageSize);
         this.currentPage = (currentPage && (this.lazy || currentPage < this.totalPages))
             ? currentPage : 1;
+        this.isButtonsMode = isButtonsMode;
+        this.isEnabledDeleteButton = isEnabledDeleteButton;
         this.format = format;
         this.header = header;
         this.onSelect = onSelect;
         this.messages = Object.assign(this.defaultMessages, messages);
+        this.inlineCustomButtons = inlineCustomButtons;
+        this.buttonModeOptions = {
+            isSimpleArray: true,
+            titleKey: ''
+        };
+        
+        if (typeof buttonModeOptions === 'object') {
+            if (typeof buttonModeOptions.isSimpleArray !== 'undefined') {
+                const { isSimpleArray } = buttonModeOptions;
+                this.buttonModeOptions.isSimpleArray = isSimpleArray;
+            }
+
+            if (typeof buttonModeOptions.titleKey !== 'undefined') {
+                const { titleKey } = buttonModeOptions;
+                this.buttonModeOptions.titleKey = titleKey;
+            }
+        }
 
         this._callbackStr = Math.random().toString(36).slice(2);
 
@@ -50,12 +76,17 @@ class Pagination {
     }
 
     async text() {
-        if (this.lazy) {
-            this.currentItems = await this.data(this.currentPage, this.pageSize);
-        } else {
-            this.currentItems = getPageData(this.data, this.currentPage, this.pageSize);
+        let items = [];
+
+        if (false === this.isButtonsMode) {
+            if (this.lazy) {
+                this.currentItems = await this.data(this.currentPage, this.pageSize);
+            } else {
+                this.currentItems = getPageData(this.data, this.currentPage, this.pageSize);
+            }
+            
+            items = this.currentItems;
         }
-        const items = this.currentItems;
 
         const header = this.header(this.currentPage, this.pageSize, this.total);
         const itemsText = items.map(this.format).join('\n');
@@ -74,29 +105,66 @@ class Pagination {
         const items = this.currentItems;
 
         let row = [];
-        // Pagination buttons
-        for (let i = 0; i < items.length; i++) {
-            if (
-                !(i % this.rowSize)
-                && row.length
-            ) {
-                keyboard.push(row);
-                row = [];
+
+        if (this.isButtonsMode === false) {
+            
+            // Pagination buttons
+            for (let i = 0; i < items.length; i++) {
+                if (0 === (i % this.rowSize) && row.length) {
+                    keyboard.push(row);
+                    row = [];
+                }
+                
+                let button = getButton(
+                    `${i + 1}`,
+                    `${this._callbackStr}-${i}`
+                )
+                row.push(button);
             }
-            let button = getButton(
-                `${i + 1}`,
-                `${this._callbackStr}-${i}`
-            )
-            row.push(button);
+        } else {
+            
+            // Need to display the title from an associative array?...
+            let { isSimpleArray, titleKey } = this.buttonModeOptions;
+            
+            if (isSimpleArray) {
+                titleKey = 0;
+            }
+
+            // Pagination buttons
+            for (let i = 0; i < items.length; i++) {
+                if (0 === (i % 1) && row.length) {
+                    keyboard.push(row);
+                    row = [];
+                }
+                
+                let currentItem = items[i];
+                let textButton = (typeof currentItem[titleKey] !== 'undefined')
+                    ? currentItem[titleKey]
+                    : `Element #${i + 1}`;
+
+                let button = getButton(
+                    textButton,
+                    `${this._callbackStr}-${i}`
+                )
+                row.push(button);
+            }
         }
+
         keyboard.push(row);
         row = [];
 
         // Pagination Controls
         row.push(getButton(this.messages.prev, `${this._callbackStr}-prev`));
-        row.push(getButton(this.messages.delete, `${this._callbackStr}-delete`));
+        if (this.isEnabledDeleteButton) {
+            row.push(getButton(this.messages.delete, `${this._callbackStr}-delete`));
+        }
         row.push(getButton(this.messages.next, `${this._callbackStr}-next`));
         keyboard.push(row);
+
+        // If needed add custom buttons
+        if (this.inlineCustomButtons && typeof this.inlineCustomButtons === 'object') {
+            keyboard.push(this.inlineCustomButtons);
+        }
 
         // Give ready-to-use Telegra Markup object
         return {
