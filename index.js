@@ -154,12 +154,14 @@ class Pagination {
         row = [];
 
         // Pagination Controls
-        row.push(getButton(this.messages.prev, `${this._callbackStr}-prev`));
-        if (this.isEnabledDeleteButton) {
-            row.push(getButton(this.messages.delete, `${this._callbackStr}-delete`));
+        if (this.totalPages > 1) {
+            row.push(getButton(this.messages.prev, `${this._callbackStr}-prev`));
+            if (this.isEnabledDeleteButton) {
+                row.push(getButton(this.messages.delete, `${this._callbackStr}-delete`));
+            }
+            row.push(getButton(this.messages.next, `${this._callbackStr}-next`));
+            keyboard.push(row);
         }
-        row.push(getButton(this.messages.next, `${this._callbackStr}-next`));
-        keyboard.push(row);
 
         // If needed add custom buttons
         if (this.inlineCustomButtons && typeof this.inlineCustomButtons === 'object') {
