@@ -138,7 +138,7 @@ class Pagination {
                 }
                 
                 let currentItem = items[i];
-                let textButton = (typeof currentItem[titleKey] !== 'undefined')
+                let textButton = (typeof currentItem[titleKey] !== 'undefined' && currentItem[titleKey] != '')
                     ? currentItem[titleKey]
                     : `Element #${i + 1}`;
 
