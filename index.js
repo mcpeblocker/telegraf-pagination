@@ -60,10 +60,10 @@ class Pagination {
     this.onSelect = onSelect;
     this.messages = Object.assign(this.defaultMessages, messages);
     this.inlineCustomButtons = inlineCustomButtons;
-    this.buttonModeOptions = {
+    this.buttonModeOptions = Object.assign({
       isSimpleArray: true,
       titleKey: "",
-    };
+    }, { isSimpleArray, titleKey );
 
     if (typeof buttonModeOptions === "object") {
       if (typeof buttonModeOptions.isSimpleArray !== "undefined") {
