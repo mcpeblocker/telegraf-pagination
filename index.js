@@ -61,7 +61,7 @@ class Pagination {
     this.messages = Object.assign(this.defaultMessages, messages);
     this.inlineCustomButtons = inlineCustomButtons;
     this.buttonModeOptions = Object.assign({
-      isSimpleArray: true,
+      isSimpleArray: false,
       titleKey: "",
     }, buttonModeOptions);
 
