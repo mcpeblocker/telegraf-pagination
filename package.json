@@ -1,6 +1,6 @@
 {
   "name": "telegraf-pagination",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "A simplified Telegraf plugin to provide users with a great interface.",
   "main": "index.js",
   "scripts": {},
