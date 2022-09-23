@@ -63,7 +63,7 @@ class Pagination {
     this.buttonModeOptions = Object.assign({
       isSimpleArray: true,
       titleKey: "",
-    }, { isSimpleArray, titleKey );
+    }, { isSimpleArray, titleKey });
 
     if (typeof buttonModeOptions === "object") {
       if (typeof buttonModeOptions.isSimpleArray !== "undefined") {
