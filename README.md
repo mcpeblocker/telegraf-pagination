@@ -133,6 +133,33 @@ bot.launch().then(() => {
 });
 ```
 
+## ⚡️ Recent features:
+
+- ### Buttons mode
+```js
+const { Pagination } =  require('telegraf-pagination');
+
+let data = [...]; // define data as an array
+
+bot.start(async ctx => {
+    let pagination = new Pagination({
+        data,
+        isButtonsMode: true,
+        buttonModeOptions: {
+          title: "name", // the 'name' property of each item is displayed
+          
+          // you can implement complex combinations of item keys using function 👇
+          // title: (item, i) => i + 1 + ". " + item.title,
+        },
+    });
+    let text = await pagination.text();
+    let keyboard = await pagination.keyboard();
+    ctx.reply(text, keyboard);
+
+    pagination.handleActions(bot);
+});
+```
+
 ## Contributing
 
 Please read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for details on our code of conduct. Feel free to submit any pull request.

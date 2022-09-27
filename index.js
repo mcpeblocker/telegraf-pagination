@@ -18,7 +18,7 @@ class Pagination {
     isButtonsMode = false,
     buttonModeOptions = {
       isSimpleArray: true,
-      titleKey: "",
+      title: "",
     },
     isEnabledDeleteButton = true,
     inlineCustomButtons = null,
@@ -60,10 +60,13 @@ class Pagination {
     this.onSelect = onSelect;
     this.messages = Object.assign(this.defaultMessages, messages);
     this.inlineCustomButtons = inlineCustomButtons;
-    this.buttonModeOptions = Object.assign({
-      isSimpleArray: false,
-      titleKey: "",
-    }, buttonModeOptions);
+    this.buttonModeOptions = Object.assign(
+      {
+        isSimpleArray: false,
+        title: "",
+      },
+      buttonModeOptions
+    );
 
     if (typeof buttonModeOptions === "object") {
       if (typeof buttonModeOptions.isSimpleArray !== "undefined") {
@@ -71,9 +74,9 @@ class Pagination {
         this.buttonModeOptions.isSimpleArray = isSimpleArray;
       }
 
-      if (typeof buttonModeOptions.titleKey !== "undefined") {
-        const { titleKey } = buttonModeOptions;
-        this.buttonModeOptions.titleKey = titleKey;
+      if (typeof buttonModeOptions.title !== "undefined") {
+        const { title } = buttonModeOptions;
+        this.buttonModeOptions.title = title;
       }
     }
 
@@ -140,10 +143,10 @@ class Pagination {
       }
     } else {
       // Need to display the title from an associative array?...
-      let { isSimpleArray, titleKey } = this.buttonModeOptions;
+      let { isSimpleArray, title } = this.buttonModeOptions;
 
       if (isSimpleArray) {
-        titleKey = 0;
+        title = 0;
       }
 
       // Pagination buttons
@@ -154,13 +157,18 @@ class Pagination {
         }
 
         let currentItem = items[i];
-        let textButton =
-          typeof currentItem[titleKey] !== "undefined" &&
-          currentItem[titleKey] != ""
-            ? currentItem[titleKey]
-            : `Element #${i + 1}`;
+        let buttonText;
+        if (typeof title === "function") {
+          buttonText = title(currentItem, i);
+        } else {
+          buttonText =
+            typeof currentItem[title] !== "undefined" &&
+            (currentItem[title] !== ""
+              ? currentItem[title]
+              : `Element #${i + 1}`);
+        }
 
-        let button = getButton(textButton, `${this._callbackStr}-${i}`);
+        let button = getButton(buttonText, `${this._callbackStr}-${i}`);
         row.push(button);
       }
     }
