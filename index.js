@@ -193,7 +193,7 @@ class Pagination {
       this.inlineCustomButtons &&
       typeof this.inlineCustomButtons === "object"
     ) {
-      keyboard.push(this.inlineCustomButtons);
+      keyboard.push(...this.inlineCustomButtons);
     }
 
     // Give ready-to-use Telegra Markup object
