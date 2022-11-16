@@ -89,7 +89,7 @@ let fakeData = Array(10)
     title: `Item ${i + 1}`,
   }));
 
-bot.command("pagination", (ctx) => {
+bot.command("pagination", async (ctx) => {
   const pagination = new Pagination({
     data: fakeData, // array of items
     header: (currentPage, pageSize, total) =>
