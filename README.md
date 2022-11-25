@@ -170,7 +170,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-- **Alisher Ortiqov** - _Initial work_ - [mcpebloker](https://github.com/mcpeblocker)
+- **Alisher Ortiqov** - _Initial work_ - [mcpeblocker](https://github.com/mcpeblocker)
 
 See also the list of [contributors](https://github.com/mcpeblocker/telegraf-pagination/contributors) who participated in this project.
 
