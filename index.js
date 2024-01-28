@@ -19,6 +19,7 @@ class Pagination {
     buttonModeOptions = {
       isSimpleArray: true,
       title: "",
+      callback: ""
     },
     isEnabledDeleteButton = true,
     inlineCustomButtons = null,
@@ -64,6 +65,7 @@ class Pagination {
       {
         isSimpleArray: false,
         title: "",
+        callback: "",
       },
       buttonModeOptions
     );
@@ -77,6 +79,11 @@ class Pagination {
       if (typeof buttonModeOptions.title !== "undefined") {
         const { title } = buttonModeOptions;
         this.buttonModeOptions.title = title;
+      }
+
+      if (typeof buttonModeOptions.callback !== "undefined") {
+        const { callback } = buttonModeOptions;
+        this.buttonModeOptions.callback = callback;
       }
     }
 
@@ -143,7 +150,7 @@ class Pagination {
       }
     } else {
       // Need to display the title from an associative array?...
-      let { isSimpleArray, title } = this.buttonModeOptions;
+      let { isSimpleArray, title, callback } = this.buttonModeOptions;
 
       if (isSimpleArray) {
         title = 0;
@@ -168,7 +175,14 @@ class Pagination {
               : `Element #${i + 1}`);
         }
 
-        let button = getButton(buttonText, `${this._callbackStr}-${i}`);
+        let callbackData;
+        if (typeof callback === "function") {
+          callbackData = callback(currentItem, i);
+        } else {
+          callbackData = `${this._callbackStr}-${i}`;
+        }
+
+        let button = getButton(buttonText, callbackData);
         row.push(button);
       }
     }
