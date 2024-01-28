@@ -151,7 +151,7 @@ class Pagination {
 
       // Pagination buttons
       for (let i = 0; i < items.length; i++) {
-        if (0 === i % 1 && row.length) {
+        if (0 === i % this.rowSize && row.length) {
           keyboard.push(row);
           row = [];
         }
