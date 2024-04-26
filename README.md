@@ -1,6 +1,12 @@
 # telegraf-pagination
 
-A simplified Telegraf plugin to provide users with a great interface.
+A simplified Telegraf plugin to provide users with a great pagination interface.
+The plugin provides two ways of list pagination interfaces depending on developer's choice:
+   
+1. Text mode
+<img src="assets/text-mode.png" width="400" />
+2. Buttons mode
+<img src="assets/button-mode.png" width="400" />
 
 ## Getting started
 
